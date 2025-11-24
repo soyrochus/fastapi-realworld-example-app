@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="card" style="max-width:620px; margin:0 auto;">
+        <h2 style="margin-top:0;">Settings</h2>
+
+        {% if errors %}
+            <div class="error-list">
+                {% for err in errors %}
+                    <div>{{ err }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form action="/settings" method="post">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input id="username" name="username" type="text" value="{{ form.username or '' }}" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" value="{{ form.email or '' }}" required>
+            </div>
+            <div class="form-group">
+                <label for="bio">Bio</label>
+                <textarea id="bio" name="bio">{{ form.bio or '' }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="image">Image URL</label>
+                <input id="image" name="image" type="text" value="{{ form.image or '' }}">
+            </div>
+            <div class="form-group">
+                <label for="password">New Password (optional)</label>
+                <input id="password" name="password" type="password">
+            </div>
+            <button class="button" type="submit">Save</button>
+        </form>
+    </div>
+{% endblock %}

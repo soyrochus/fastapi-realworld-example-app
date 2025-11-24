@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="card" style="max-width:520px; margin:0 auto;">
+        <h2 style="margin-top:0;">Login</h2>
+
+        {% if errors %}
+            <div class="error-list">
+                {% for err in errors %}
+                    <div>{{ err }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form action="/login" method="post">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" value="{{ form.email or '' }}" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" required>
+            </div>
+            <button class="button" type="submit">Sign in</button>
+        </form>
+        <p class="muted" style="margin-top:12px;">Need an account? <a href="/register">Register</a></p>
+    </div>
+{% endblock %}

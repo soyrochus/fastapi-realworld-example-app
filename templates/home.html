@@ -1,0 +1,79 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="layout-grid">
+    <section>
+        <div class="tabs">
+            <a class="tab {% if active_tab == 'global' %}active{% endif %}" href="/">Global Feed</a>
+            {% if current_user %}
+                <a class="tab {% if active_tab == 'feed' %}active{% endif %}" href="/?tab=feed">Your Feed</a>
+            {% endif %}
+            {% if selected_tag %}
+                <span class="pill active">#{{ selected_tag }}</span>
+            {% endif %}
+        </div>
+
+        {% if errors %}
+            <div class="error-list">
+                {% for err in errors %}
+                    <div>{{ err }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if articles %}
+            {% for article in articles %}
+                <article class="card article-card">
+                    <header class="article-header">
+                        <div class="article-meta">
+                            <span>{{ article.author.username }}</span>
+                            <span>•</span>
+                            <span>{{ article.createdAt|date }}</span>
+                        </div>
+                        <form action="/article/{{ article.slug }}/favorite" method="post" class="inline-form">
+                            {% if current_user %}
+                                <input type="hidden" name="action" value="{{ 'unfavorite' if article.favorited else 'favorite' }}">
+                                <button class="favorite-pill {% if article.favorited %}active{% endif %}" type="submit">
+                                    &#9829; {{ article.favoritesCount }}
+                                </button>
+                            {% else %}
+                                <span class="pill">&#9829; {{ article.favoritesCount }}</span>
+                            {% endif %}
+                        </form>
+                    </header>
+                    <h2 class="article-title"><a href="/article/{{ article.slug }}">{{ article.title }}</a></h2>
+                    <p class="article-description">{{ article.description }}</p>
+                    <div class="tags">
+                        {% for tag in article.tagList %}
+                            <span class="tag">{{ tag }}</span>
+                        {% endfor %}
+                    </div>
+                </article>
+            {% endfor %}
+        {% else %}
+            <p class="muted">No articles yet.</p>
+        {% endif %}
+
+        <div class="pagination">
+            {% if page > 1 %}
+                <a href="/?tab={{ active_tab }}{% if selected_tag %}&tag={{ selected_tag }}{% endif %}&page={{ page - 1 }}">Prev</a>
+            {% endif %}
+            <span class="active">Page {{ page }}</span>
+            {% if has_next %}
+                <a href="/?tab={{ active_tab }}{% if selected_tag %}&tag={{ selected_tag }}{% endif %}&page={{ page + 1 }}">Next</a>
+            {% endif %}
+        </div>
+    </section>
+
+    <aside class="sidebar card">
+        <div class="muted" style="margin-bottom:10px;">Popular Tags</div>
+        <div class="tag-list">
+            {% for tag in tags %}
+                <a class="pill {% if tag == selected_tag %}active{% endif %}" href="/?tag={{ tag }}">{{ tag }}</a>
+            {% endfor %}
+            {% if not tags %}
+                <span class="muted">No tags</span>
+            {% endif %}
+        </div>
+    </aside>
+</div>
+{% endblock %}

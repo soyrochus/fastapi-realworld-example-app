@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+{% block content %}
+    {% if errors %}
+        <div class="error-list">
+            {% for err in errors %}
+                <div>{{ err }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if profile %}
+        <section class="card" style="display:flex; gap:16px; align-items:center;">
+            {% if profile.image %}
+                <img src="{{ profile.image }}" alt="{{ profile.username }}" class="avatar" style="width:64px;height:64px;">
+            {% endif %}
+            <div style="flex:1;">
+                <h2 style="margin:0;">{{ profile.username }}</h2>
+                <p class="muted" style="margin:6px 0 0 0;">{{ profile.bio }}</p>
+            </div>
+            {% if current_user and current_user.username != profile.username %}
+                <form action="/profile/{{ profile.username }}/follow" method="post" class="inline-form">
+                    <input type="hidden" name="action" value="{{ 'unfollow' if profile.following else 'follow' }}">
+                    <button class="button {% if profile.following %}secondary{% endif %}" type="submit">
+                        {% if profile.following %}Unfollow{% else %}Follow{% endif %}
+                    </button>
+                </form>
+            {% endif %}
+        </section>
+
+        <section style="margin-top:16px;">
+            <div class="tabs">
+                <a class="tab {% if active_tab != 'favorites' %}active{% endif %}" href="/profile/{{ profile.username }}?tab=author">Articles</a>
+                <a class="tab {% if active_tab == 'favorites' %}active{% endif %}" href="/profile/{{ profile.username }}?tab=favorites">Favorited</a>
+            </div>
+
+            {% if articles %}
+                {% for article in articles %}
+                    <article class="card article-card">
+                        <header class="article-meta" style="justify-content: space-between;">
+                            <div class="muted">{{ article.createdAt|date }}</div>
+                            <form action="/article/{{ article.slug }}/favorite" method="post" class="inline-form">
+                                {% if current_user %}
+                                    <input type="hidden" name="action" value="{{ 'unfavorite' if article.favorited else 'favorite' }}">
+                                    <button class="favorite-pill {% if article.favorited %}active{% endif %}" type="submit">
+                                        &#9829; {{ article.favoritesCount }}
+                                    </button>
+                                {% else %}
+                                    <span class="pill">&#9829; {{ article.favoritesCount }}</span>
+                                {% endif %}
+                            </form>
+                        </header>
+                        <h3 class="article-title"><a href="/article/{{ article.slug }}">{{ article.title }}</a></h3>
+                        <p class="article-description">{{ article.description }}</p>
+                        <div class="tags">
+                            {% for tag in article.tagList %}
+                                <span class="tag">{{ tag }}</span>
+                            {% endfor %}
+                        </div>
+                    </article>
+                {% endfor %}
+            {% else %}
+                <p class="muted">No articles to show.</p>
+            {% endif %}
+        </section>
+    {% else %}
+        <p class="muted">Profile not found.</p>
+    {% endif %}
+{% endblock %}

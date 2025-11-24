@@ -1,0 +1,88 @@
+{% extends "layout.html" %}
+{% block content %}
+    {% if errors %}
+        <div class="error-list">
+            {% for err in errors %}
+                <div>{{ err }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if article %}
+        <article class="card">
+            <header class="article-meta" style="justify-content: space-between;">
+                <div style="display:flex; gap:10px; align-items:center;">
+                    {% if article.author.image %}
+                        <img src="{{ article.author.image }}" alt="{{ article.author.username }}" class="avatar">
+                    {% endif %}
+                    <div>
+                        <div><a href="/profile/{{ article.author.username }}">{{ article.author.username }}</a></div>
+                        <div class="muted">{{ article.createdAt|date }}</div>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    {% if current_user %}
+                        <form action="/article/{{ article.slug }}/favorite" method="post" class="inline-form">
+                            <input type="hidden" name="action" value="{{ 'unfavorite' if article.favorited else 'favorite' }}">
+                            <button class="favorite-pill {% if article.favorited %}active{% endif %}" type="submit">
+                                &#9829; {{ article.favoritesCount }}
+                            </button>
+                        </form>
+                        {% if current_user.username == article.author.username %}
+                            <a class="button secondary" href="/article/{{ article.slug }}/edit">Edit</a>
+                            <form action="/article/{{ article.slug }}/delete" method="post" class="inline-form" onsubmit="return confirm('Delete this article?');">
+                                <button class="button danger" type="submit">Delete</button>
+                            </form>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </header>
+            <h1 class="article-title">{{ article.title }}</h1>
+            <div class="article-body">{{ article.body }}</div>
+            <div class="tags">
+                {% for tag in article.tagList %}
+                    <span class="tag">{{ tag }}</span>
+                {% endfor %}
+            </div>
+        </article>
+
+        <section class="card" style="margin-top:14px;">
+            <h3>Comments</h3>
+            {% if current_user %}
+                <form action="/article/{{ article.slug }}/comment" method="post" class="form-group">
+                    <label for="comment">Add a comment</label>
+                    <textarea id="comment" name="body" required placeholder="Write something..."></textarea>
+                    <button class="button" type="submit">Post Comment</button>
+                </form>
+            {% else %}
+                <p class="muted">Please <a href="/login">log in</a> to comment.</p>
+            {% endif %}
+
+            {% for comment in comments %}
+                <div class="card comment-card">
+                    <div class="article-meta" style="justify-content: space-between;">
+                        <div style="display:flex; gap:10px; align-items:center;">
+                            {% if comment.author.image %}
+                                <img src="{{ comment.author.image }}" alt="{{ comment.author.username }}" class="avatar">
+                            {% endif %}
+                            <div>
+                                <div><a href="/profile/{{ comment.author.username }}">{{ comment.author.username }}</a></div>
+                                <div class="muted">{{ comment.createdAt|date }}</div>
+                            </div>
+                        </div>
+                        {% if current_user and comment.author.username == current_user.username %}
+                            <form action="/article/{{ article.slug }}/comment/{{ comment.id }}/delete" method="post" class="inline-form">
+                                <button class="ghost" type="submit">Delete</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                    <p>{{ comment.body }}</p>
+                </div>
+            {% else %}
+                <p class="muted">No comments yet.</p>
+            {% endfor %}
+        </section>
+    {% else %}
+        <p class="muted">Article not found.</p>
+    {% endif %}
+{% endblock %}

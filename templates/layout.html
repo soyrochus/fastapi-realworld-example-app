@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conduit</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header class="topbar">
+        <div class="topbar-content">
+            <a href="/" class="brand">Conduit</a>
+            <nav class="nav-links">
+                <a href="/" class="{% if request.url.path == '/' %}active{% endif %}">Home</a>
+                {% if current_user %}
+                    <a href="/article/new">New Article</a>
+                    <a href="/settings">Settings</a>
+                    <a href="/profile/{{ current_user.username }}">{{ current_user.username }}</a>
+                    <form action="/logout" method="post" class="inline-form">
+                        <button type="submit" class="ghost">Logout</button>
+                    </form>
+                {% else %}
+                    <a href="/login">Login</a>
+                    <a href="/register">Register</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        {% if flash %}
+            <div class="flash flash-{{ flash.category | default('info') }}">
+                {{ flash.message }}
+            </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
