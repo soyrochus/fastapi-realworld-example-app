@@ -137,6 +137,9 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-.vscode
+# Ignore Visual Studio Code settings, except for mcp.json
+.vscode/*
+!.vscode/
+!.vscode/mcp.json
 
 coverage.xml
