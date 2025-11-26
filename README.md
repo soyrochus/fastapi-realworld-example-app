@@ -1,3 +1,22 @@
+# MCP Use case demonstration with FastAPI Conduit App
+## Fork of the RealWorld Example App
+
+FastAPI codebase containing real world examples (CRUD, auth, advanced patterns, etc) that adheres to the [RealWorld](https://github.com/gothinkster/realworld-example-apps) spec and API.
+
+## About This Fork
+
+This fork demonstrates the power of **Model Context Protocol (MCP)** and **AI-assisted development**:
+
+- **MCP Integration**: Shows how AI assistants can interact with APIs through the Model Context Protocol, enabling natural language queries against the Conduit API (e.g., "What are the articles posted by Angela Mcdaniel?")
+- **Server-Side Rendered UI**: Includes a fully functional web UI built with FastAPI, Jinja2 templates, and Material-inspired CSS - demonstrating AI-assisted full-stack development
+- **Real-World Example**: Provides a practical use case for understanding how MCP bridges the gap between users and data sources without requiring custom UI features or manual database queries
+
+📖 **For detailed information about the MCP use case and how it works, see [MCP Use Case.md](MCP%20Use%20Case.md)**
+
+---
+
+## Original README
+
 # ![RealWorld Example App](logo.png)
 
 FastAPI codebase containing real world examples (CRUD, auth, advanced patterns, etc) that adheres to the [RealWorld](https://github.com/gothinkster/realworld-example-apps) spec and API.
